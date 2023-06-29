@@ -39,7 +39,7 @@ function renderTask(todos){
     let checked = item.comp ? 'checked': null;
     const li = document.createElement('li');
     li.setAttribute('class','item');
-    li.setAttribute('data-key',item.id);
+    li.setAttribute('id',item.id);
     if (item.comp === true) {
       li.classList.add('checked');
     }
@@ -56,33 +56,47 @@ function toggle(id){
     tasks.forEach(function(task){
         if(task.id==id){
             task.comp=!task.comp;
+            if(task.comp)
+              document.getElementById(id).classList.add('checked');
+            else
+            document.getElementById(id).classList.remove('checked');
         }
     });
-    addToLocalStorage(tasks);
+    localStorage.setItem('tasks',JSON.stringify(tasks));
 }
 function delTodo(id){
     tasks=tasks.filter(function(task){
+        if(task.id==id){
+          let ele = document.getElementById(id);
+          //console.log(ele);
+          ele.parentNode.removeChild(ele);
+        }
         return task.id!=id;
     });
-    addToLocalStorage(tasks);
+    localStorage.setItem('tasks',JSON.stringify(tasks));
 }
 function editTodo(id){
     tasks.forEach(function(task){
         if(task.id==id){
-            input.value=task.name;
-            delTodo(id);
+          let new_task = prompt("Please Edit your task", task.name);
+          if (new_task == null || new_task == "") {
+            return;
+          } else {
+            document.getElementById(id).textContent=new_task;
+            task.name=new_task;
+          }
         }
     });
-    addToLocalStorage(tasks);
+    localStorage.setItem('tasks',JSON.stringify(tasks));
 }
 items.addEventListener('click',function(event){
     if(event.target.type=='checkbox'){
-        toggle(event.target.parentElement.getAttribute('data-key'));
+        toggle(event.target.parentElement.getAttribute('id'));
     }
     if(event.target.classList.contains('del-btn')){
-        delTodo(event.target.parentElement.getAttribute('data-key'));
+        delTodo(event.target.parentElement.getAttribute('id'));
     }
     if(event.target.classList.contains('edit-btn')){
-        editTodo(event.target.parentElement.getAttribute('data-key'));
+        editTodo(event.target.parentElement.getAttribute('id'));
     }
 });
