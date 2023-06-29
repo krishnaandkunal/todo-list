@@ -47,7 +47,7 @@ function renderTask(todos){
       <button class="del-btn">X</button>
       <button class="edit-btn">i</button>
       <input class="checkbox" type="checkbox" ${checked }>
-      ${item.name}
+      <div> ${item.name} </div>
     `;
     items.append(li);
   });
@@ -82,7 +82,7 @@ function editTodo(id){
           if (new_task == null || new_task == "") {
             return;
           } else {
-            document.getElementById(id).textContent=new_task;
+            document.querySelector('[id="' +id+ '"] div').innerHTML=new_task;
             task.name=new_task;
           }
         }
